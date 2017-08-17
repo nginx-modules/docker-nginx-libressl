@@ -1,6 +1,6 @@
 FROM alpine:3.6
 
-MAINTAINER Denis Denisov "denji0k@gmail.com"
+MAINTAINER ajoergensen
 
 ENV NGINX_VERSION 1.12.1
 ENV LIBRESSL_VERSION 2.5.5
@@ -171,7 +171,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 			| sort -u \
 			| xargs -r apk info --installed \
 			| sort -u \
-	) tzdata ca-certificates" \
+	) tzdata ca-certificates tini" \
 	&& apk add --no-cache --virtual .nginx-rundeps $runDeps \
 	&& apk del .build-deps \
 	&& apk del .gettext \
@@ -190,4 +190,5 @@ LABEL description="nginx built from source" \
 
 EXPOSE 80 443
 
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["nginx", "-g", "daemon off;"]
