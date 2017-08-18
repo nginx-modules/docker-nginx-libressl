@@ -9,6 +9,8 @@
 - Dynamic TLS records patch support (and configured) - From [Cloudflare][6]
 - [Brotli][7] compression support (and configured)
 
+Currently the HPACK patch from Cloudflare is not used because it does not apply clean against mainline.
+
 Originally based on the official nginx Dockerfile & `Wonderfall/boring-nginx` - Forked from [denji/nginx-libressl][1] - This version uses [tini][2], a tiny but valid `init` for containers
 
 [1]: https://github.com/nginx-modules/docker-nginx-libressl/
