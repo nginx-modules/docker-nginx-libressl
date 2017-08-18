@@ -68,6 +68,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		ca-certificates \
 		cmake \
 		curl \
+		file \
 		gcc \
 		gd-dev \
 		geoip-dev \
@@ -106,7 +107,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	done; \
 	test -z "$found" && echo >&2 "error: failed to fetch GPG key $GPG_KEYS" && exit 1; \
 	gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
-	&& rm -rf "$GNUPGHOME" nginx.tar.gz.asc \
 	&& mkdir -p /usr/src \
 	\
 	&& LIBRESSL_TARBALL="libressl-$LIBRESSL_VERSION.tar.gz" \
@@ -116,7 +116,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl.asc -o libressl.asc \
 	&& gpg --import libressl.asc \
 	&& gpg --batch --verify $LIBRESSL_TARBALL.asc $LIBRESSL_TARBALL \
-	&& rm -r "$GNUPGHOME" libressl.asc $LIBRESSL_TARBALL.asc \
 	&& tar -zxC /usr/src -f $LIBRESSL_TARBALL \
 	\
 	&& (git clone --depth=1 https://github.com/bagder/libbrotli /usr/src/libbrotli \
@@ -126,7 +125,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& git clone --depth=1 https://github.com/openresty/headers-more-nginx-module /usr/src/ngx_headers_more \
 	\
 	&& tar -zxC /usr/src -f nginx.tar.gz \
-	&& rm nginx.tar.gz \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& curl -fSL https://cdn.rawgit.com/nginx-modules/ngx_http_tls_dyn_size/0.1/nginx-dyntls-1.11.5.diff -o dynamic_tls_records.patch \
 	&& patch -p1 < dynamic_tls_records.patch \
@@ -155,8 +153,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
 	&& strip /usr/sbin/nginx* \
 	&& strip /usr/lib/nginx/modules/*.so \
-	&& rm -rf /usr/src/nginx-$NGINX_VERSION \
-	&& rm -rf /usr/src/libressl* /usr/src/libbrotli /usr/src/ngx_* \
 	\
 	# Bring in gettext so we can get `envsubst`, then throw
 	# the rest away. To do this, we need to install `gettext`
@@ -179,7 +175,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	\
 	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
-	&& ln -sf /dev/stderr /var/log/nginx/error.log
+	&& ln -sf /dev/stderr /var/log/nginx/error.log \
+	&& rm -rf /tmp/* /usr/src/* /var/cache/apk/* /root/.gnupg
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.vh.no-default.conf /etc/nginx/conf.d/default.conf
