@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM ajoergensen/baseimage-alpine
 
 MAINTAINER ajoergensen
 
@@ -168,7 +168,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 			| sort -u \
 			| xargs -r apk info --installed \
 			| sort -u \
-	) tzdata ca-certificates tini" \
+	) sed tzdata ca-certificates" \
 	&& apk add --no-cache --virtual .nginx-rundeps $runDeps \
 	&& apk del .build-deps \
 	&& apk del .gettext \
@@ -179,14 +179,15 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
 	&& rm -rf /tmp/* /usr/src/* /var/cache/apk/* /root/.gnupg
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY nginx.vh.no-default.conf /etc/nginx/conf.d/default.conf
+ADD root/ /
+
+RUN \
+        chmod -v +x /etc/cont-init.d/*.sh /etc/services.d/*/run && \
+        mkdir /var/www
 
 LABEL description="nginx built from source" \
       openssl="LibreSSL $LIBRESSL_VERSION" \
       nginx="nginx $NGINX_VERSION"
 
 EXPOSE 80 443
-
-ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["nginx", "-g", "daemon off;"]
+VOLUME /var/www
