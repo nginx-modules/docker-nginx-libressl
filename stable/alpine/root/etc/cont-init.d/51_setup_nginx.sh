@@ -1,12 +1,11 @@
 #!/usr/bin/with-contenv bash
-set -x
 
 # Set worker_processes
 : ${WORKER_PROCESSES:="auto"}
 
 grep -q "@@WORKER_PROCESSES@@" /etc/nginx/nginx.conf
 
-if [[ $? -eq 0 ]]
+if [[ $? -eq 0 ]] && [[ -w /etc/nginx/nginx.conf ]]
  then
 	sed -i "s|@@WORKER_PROCESSES@@|$WORKER_PROCESSES|" /etc/nginx/nginx.conf
 fi
