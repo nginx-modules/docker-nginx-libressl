@@ -119,7 +119,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& rm -r "$GNUPGHOME" libressl.asc $LIBRESSL_TARBALL.asc \
 	&& tar -zxC /usr/src -f $LIBRESSL_TARBALL \
 	\
-	&& (git clone --depth=1 https://github.com/bagder/libbrotli /usr/src/libbrotli \
+	&& (git clone --depth=1 https://github.com/nginx-modules/libbrotli /usr/src/libbrotli \
 		&& cd /usr/src/libbrotli \
 		&& ./autogen.sh && ./configure && make -j$(getconf _NPROCESSORS_ONLN) && make install) \
 	&& git clone --depth=1 --recurse-submodules https://github.com/google/ngx_brotli /usr/src/ngx_brotli \
