@@ -1,9 +1,9 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
 MAINTAINER Denis Denisov "denji0k@gmail.com"
 
-ENV NGINX_VERSION 1.12.1
-ENV LIBRESSL_VERSION 2.5.5
+ENV NGINX_VERSION 1.12.2
+ENV LIBRESSL_VERSION 2.7.1
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	GPG_LIBRESSL=A1EB079B8D3EB92B4EBD3139663AF51BD5E4D8D5 \
@@ -119,7 +119,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& rm -r "$GNUPGHOME" libressl.asc $LIBRESSL_TARBALL.asc \
 	&& tar -zxC /usr/src -f $LIBRESSL_TARBALL \
 	\
-	&& (git clone --depth=1 https://github.com/nginx-modules/libbrotli /usr/src/libbrotli \
+	&& (git clone --depth=1 https://github.com/bagder/libbrotli /usr/src/libbrotli \
 		&& cd /usr/src/libbrotli \
 		&& ./autogen.sh && ./configure && make -j$(getconf _NPROCESSORS_ONLN) && make install) \
 	&& git clone --depth=1 --recurse-submodules https://github.com/google/ngx_brotli /usr/src/ngx_brotli \
