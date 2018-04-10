@@ -1,9 +1,7 @@
 FROM alpine:3.7
 
-MAINTAINER Denis Denisov "denji0k@gmail.com"
-
-ENV NGINX_VERSION 1.12.2
-ENV LIBRESSL_VERSION 2.7.2
+ENV NGINX_VERSION=1.12.2
+ENV LIBRESSL_VERSION=2.7.2
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	GPG_LIBRESSL=A1EB079B8D3EB92B4EBD3139663AF51BD5E4D8D5 \
@@ -184,7 +182,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.vh.no-default.conf /etc/nginx/conf.d/default.conf
 
-LABEL description="nginx built from source" \
+LABEL description="NGINX Docker built top of LibreSSL" \
+      maintainer="Denis Denisov <denji0k@gmail.com>" \
       openssl="LibreSSL $LIBRESSL_VERSION" \
       nginx="nginx $NGINX_VERSION"
 
