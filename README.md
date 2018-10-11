@@ -1,12 +1,14 @@
 # **NGINX** built with **LibreSSL**
 
-### Build
-
-[![](https://images.microbadger.com/badges/version/denji/nginx-libressl.svg)](https://microbadger.com/images/denji/nginx-libressl)
-
 ### Docker image
 
 [![](https://images.microbadger.com/badges/image/denji/nginx-libressl.svg)](https://microbadger.com/images/denji/nginx-libressl) [![](https://img.shields.io/docker/automated/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/builds/) [![](https://img.shields.io/docker/pulls/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/) [![](https://img.shields.io/docker/stars/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/)
+
+#### Build
+
+[![](https://images.microbadger.com/badges/version/denji/nginx-libressl:stable-alpine.svg)](https://microbadger.com/images/denji/nginx-libressl:stable-alpine "denji/nginx-libressl:stable-alpine") [![](https://images.microbadger.com/badges/image/denji/nginx-libressl:stable-alpine.svg)](https://microbadger.com/images/denji/nginx-libressl:stable-alpine "denji/nginx-libressl:stable-alpine")
+
+[![](https://images.microbadger.com/badges/version/denji/nginx-libressl:mainline-alpine.svg)](https://microbadger.com/images/denji/nginx-libressl:mainline-alpine "nginx-libressl:mainline-alpine") [![](https://images.microbadger.com/badges/image/denji/nginx-libressl:mainline-alpine.svg)](https://microbadger.com/images/denji/nginx-libressl:mainline-alpine "nginx-libressl:mainline-alpine")
 
 #### Features
 
