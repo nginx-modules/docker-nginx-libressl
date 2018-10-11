@@ -2,7 +2,7 @@
 
 ### Docker image
 
-[![](https://images.microbadger.com/badges/image/denji/nginx-libressl.svg)](https://microbadger.com/images/denji/nginx-libressl) [![](https://img.shields.io/docker/automated/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/builds/) [![](https://img.shields.io/docker/pulls/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/) [![](https://img.shields.io/docker/stars/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/)
+[![](https://img.shields.io/docker/automated/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/builds/) [![](https://img.shields.io/docker/pulls/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/) [![](https://img.shields.io/docker/stars/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/)
 
 #### Build
 
