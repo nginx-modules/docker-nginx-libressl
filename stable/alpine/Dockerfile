@@ -4,7 +4,6 @@ ENV NGINX_VERSION=1.14.0
 ENV LIBRESSL_VERSION=2.7.4
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
-	GPG_LIBRESSL=A1EB079B8D3EB92B4EBD3139663AF51BD5E4D8D5 \
 	&& CONFIG="\
 		--prefix=/etc/nginx \
 		--sbin-path=/usr/sbin/nginx \
@@ -91,6 +90,9 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	\
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
+	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-$LIBRESSL_VERSION.tar.gz -o libressl-$LIBRESSL_VERSION.tar.gz \
+	&& curl -fSL http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-$LIBRESSL_VERSION.tar.gz.asc -o libressl-$LIBRESSL_VERSION.tar.gz.asc \
+	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl.asc -o libressl.asc \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& found=''; \
 	for server in \
@@ -104,24 +106,15 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	done; \
 	test -z "$found" && echo >&2 "error: failed to fetch GPG key $GPG_KEYS" && exit 1; \
 	gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
-	&& rm -rf "$GNUPGHOME" nginx.tar.gz.asc \
-	&& mkdir -p /usr/src \
-	\
-	&& LIBRESSL_TARBALL="libressl-$LIBRESSL_VERSION.tar.gz" \
-	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/$LIBRESSL_TARBALL -o $LIBRESSL_TARBALL \
-	&& export GNUPGHOME="$(mktemp -d)" \
-	&& curl -fSL http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/$LIBRESSL_TARBALL.asc -o $LIBRESSL_TARBALL.asc \
-	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl.asc -o libressl.asc \
 	&& gpg --import libressl.asc \
-	&& gpg --batch --verify $LIBRESSL_TARBALL.asc $LIBRESSL_TARBALL \
-	&& rm -r "$GNUPGHOME" libressl.asc $LIBRESSL_TARBALL.asc \
-	&& tar -zxC /usr/src -f $LIBRESSL_TARBALL \
-	\
-	&& git clone --depth=1 --recurse-submodules https://github.com/eustas/ngx_brotli /usr/src/ngx_brotli \
-	&& git clone --depth=1 https://github.com/openresty/headers-more-nginx-module /usr/src/ngx_headers_more \
-	\
+	&& gpg --batch --verify libressl-$LIBRESSL_VERSION.tar.gz.asc libressl-$LIBRESSL_VERSION.tar.gz \
+	&& rm -rf "$GNUPGHOME" libressl.asc "libressl-$LIBRESSL_VERSION.tar.gz.asc" \
+	&& mkdir -p /usr/src \
 	&& tar -zxC /usr/src -f nginx.tar.gz \
 	&& rm nginx.tar.gz \
+	&& git clone --depth=1 --recurse-submodules https://github.com/eustas/ngx_brotli /usr/src/ngx_brotli \
+	&& git clone --depth=1 https://github.com/openresty/headers-more-nginx-module /usr/src/ngx_headers_more \
+	&& tar -zxC /usr/src -f libressl-$LIBRESSL_VERSION.tar.gz \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& curl -fSL https://cdn.rawgit.com/nginx-modules/ngx_http_tls_dyn_size/556ed42/nginx__dynamic_tls_records_1.13.0%2B.patch -o dynamic_tls_records.patch \
 	&& patch -p1 < dynamic_tls_records.patch \
