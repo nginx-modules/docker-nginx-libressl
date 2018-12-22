@@ -1,7 +1,7 @@
 FROM alpine:3.8
 
 ENV NGINX_VERSION=1.14.2
-ENV LIBRESSL_VERSION=2.8.2
+ENV LIBRESSL_VERSION=2.8.3
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
@@ -91,7 +91,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
 	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-$LIBRESSL_VERSION.tar.gz -o libressl-$LIBRESSL_VERSION.tar.gz \
-	&& curl -fSL http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-$LIBRESSL_VERSION.tar.gz.asc -o libressl-$LIBRESSL_VERSION.tar.gz.asc \
+	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-$LIBRESSL_VERSION.tar.gz.asc -o libressl-$LIBRESSL_VERSION.tar.gz.asc \
 	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl.asc -o libressl.asc \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& found=''; \
