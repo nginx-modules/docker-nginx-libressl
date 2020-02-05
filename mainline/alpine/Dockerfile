@@ -112,7 +112,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& mkdir -p /usr/src \
 	&& tar -zxC /usr/src -f nginx.tar.gz \
 	&& rm nginx.tar.gz \
-	&& git clone --depth=1 --recurse-submodules https://github.com/eustas/ngx_brotli /usr/src/ngx_brotli \
+	&& git clone --depth=1 --recurse-submodules https://github.com/google/ngx_brotli /usr/src/ngx_brotli \
 	&& git clone --depth=1 https://github.com/openresty/headers-more-nginx-module /usr/src/ngx_headers_more \
 	&& tar -zxC /usr/src -f libressl-$LIBRESSL_VERSION.tar.gz \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
