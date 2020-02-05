@@ -116,7 +116,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& git clone --depth=1 https://github.com/openresty/headers-more-nginx-module /usr/src/ngx_headers_more \
 	&& tar -zxC /usr/src -f libressl-$LIBRESSL_VERSION.tar.gz \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
-	&& curl -fSL https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/556ed42/nginx__dynamic_tls_records_1.13.0%2B.patch -o dynamic_tls_records.patch \
+	&& curl -fSL https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/0.5/nginx__dynamic_tls_records_1.15.5%2B.patch -o dynamic_tls_records.patch \
 	&& patch -p1 < dynamic_tls_records.patch \
 	&& ./configure $CONFIG --with-debug \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
