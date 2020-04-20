@@ -17,6 +17,8 @@
 - HTTP/2.0 (+NPN) support.
 - Async I/O using threads support.
 - Dynamic TLS records patch CloudFlare support (and configured).
-- Brotli compression support (and configured).
+- Gzip static `.gz` files support enabled
+- Brotli static `.br` files support (and configured).
+  - Brotli on-the-fly disabled (dynamic compression unstable)
 
 #### Based on the Official NGINX Dockerfile & `Wonderfall/boring-nginx`
