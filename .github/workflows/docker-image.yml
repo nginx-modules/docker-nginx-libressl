@@ -24,6 +24,8 @@ jobs:
           context: ./mainline/alpine
           push: true
           tags: docker.io/denji/nginx-libressl:mainline-alpine
+          cache-from: type=registry,ref=docker.io/denji/nginx-libressl:mainline-alpine
+          cache-to: type=inline
       -
         name: Build and push stable/alpine
         uses: docker/build-push-action@v2
@@ -31,3 +33,5 @@ jobs:
           context: ./stable/alpine
           push: true
           tags: docker.io/denji/nginx-libressl:stable-alpine
+          cache-from: type=registry,ref=docker.io/denji/nginx-libressl:stable-alpine
+          cache-to: type=inline
