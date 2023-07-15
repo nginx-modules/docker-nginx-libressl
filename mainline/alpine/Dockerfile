@@ -1,9 +1,10 @@
-FROM alpine:3.15
+FROM alpine
 
-ENV NGINX_VERSION=1.23.2
-ENV LIBRESSL_VERSION=3.6.0
+ENV NGINX_VERSION=1.25.1
+ENV LIBRESSL_VERSION=3.8.0
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
+	GPG_KEYS=13C82A63B603576156E30A4EA0EA981B66B0D967 \
 	&& CONFIG="\
 		--prefix=/etc/nginx \
 		--sbin-path=/usr/sbin/nginx \
@@ -49,10 +50,12 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-compat \
 		--with-file-aio \
 		--with-http_v2_module \
+		--with-http_v3_module \
 		--with-ipv6 \
 		--with-openssl=/usr/src/libressl-$LIBRESSL_VERSION \
 		--add-dynamic-module=/usr/src/ngx_headers_more \
 		--add-dynamic-module=/usr/src/ngx_brotli \
+		--add-dynamic-module=/usr/src/njs/nginx \
 	" \
 	&& addgroup -S nginx \
 	&& adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
@@ -87,6 +90,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		tzdata \
 		zlib \
 		zlib-dev \
+		mercurial \
 	\
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
@@ -114,9 +118,10 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& rm nginx.tar.gz \
 	&& git clone --depth=1 --recurse-submodules https://github.com/google/ngx_brotli /usr/src/ngx_brotli \
 	&& git clone --depth=1 https://github.com/openresty/headers-more-nginx-module /usr/src/ngx_headers_more \
+	&& hg clone http://hg.nginx.org/njs /usr/src/njs \
 	&& tar -zxC /usr/src -f libressl-$LIBRESSL_VERSION.tar.gz \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
-	&& curl -fSL https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/0.5/nginx__dynamic_tls_records_1.17.7%2B.patch -o dynamic_tls_records.patch \
+	&& curl -fSL https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.25.1%2B.patch -o dynamic_tls_records.patch \
 	&& patch -p1 < dynamic_tls_records.patch \
 	&& ./configure $CONFIG --with-debug \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
