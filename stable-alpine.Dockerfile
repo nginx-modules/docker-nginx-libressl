@@ -1,9 +1,9 @@
 FROM alpine:latest
 
-ENV NGINX_VERSION=1.25.4
+ENV NGINX_VERSION=1.24.0
 ENV LIBRESSL_VERSION=3.8.2
 
-RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
+RUN GPG_KEYS=13C82A63B603576156E30A4EA0EA981B66B0D967 \
 	&& CONFIG="\
 		--prefix=/etc/nginx \
 		--sbin-path=/usr/sbin/nginx \
@@ -49,12 +49,10 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 		--with-compat \
 		--with-file-aio \
 		--with-http_v2_module \
-		--with-http_v3_module \
 		--with-ipv6 \
 		--with-openssl=/usr/src/libressl-$LIBRESSL_VERSION \
 		--add-dynamic-module=/usr/src/ngx_headers_more \
 		--add-dynamic-module=/usr/src/ngx_brotli \
-		--add-dynamic-module=/usr/src/njs/nginx \
 	" \
 	&& addgroup -S nginx \
 	&& adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
@@ -89,10 +87,9 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 		tzdata \
 		zlib \
 		zlib-dev \
-		mercurial \
 	\
-	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
-	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
+	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx-$NGINX_VERSION.tar.gz \
+	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx-$NGINX_VERSION.tar.gz.asc \
 	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-$LIBRESSL_VERSION.tar.gz -o libressl-$LIBRESSL_VERSION.tar.gz \
 	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-$LIBRESSL_VERSION.tar.gz.asc -o libressl-$LIBRESSL_VERSION.tar.gz.asc \
 	&& curl -fSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl.asc -o libressl.asc \
@@ -108,19 +105,18 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 		gpg --keyserver "$server" --keyserver-options timeout=10 --recv-keys "$GPG_KEYS" && found=yes && break; \
 	done; \
 	test -z "$found" && echo >&2 "error: failed to fetch GPG key $GPG_KEYS" && exit 1; \
-	gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
+	gpg --batch --verify nginx-$NGINX_VERSION.tar.gz.asc nginx-$NGINX_VERSION.tar.gz \
 	&& gpg --import libressl.asc \
 	&& gpg --batch --verify libressl-$LIBRESSL_VERSION.tar.gz.asc libressl-$LIBRESSL_VERSION.tar.gz \
 	&& rm -rf "$GNUPGHOME" libressl.asc "libressl-$LIBRESSL_VERSION.tar.gz.asc" \
 	&& mkdir -p /usr/src \
-	&& tar -zxC /usr/src -f nginx.tar.gz \
-	&& rm nginx.tar.gz \
+	&& tar -zxC /usr/src -f nginx-$NGINX_VERSION.tar.gz \
+	&& rm nginx-$NGINX_VERSION.tar.gz \
 	&& git clone --depth=1 --recurse-submodules https://github.com/google/ngx_brotli /usr/src/ngx_brotli \
 	&& git clone --depth=1 https://github.com/openresty/headers-more-nginx-module /usr/src/ngx_headers_more \
-	&& hg clone http://hg.nginx.org/njs /usr/src/njs \
 	&& tar -zxC /usr/src -f libressl-$LIBRESSL_VERSION.tar.gz \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
-	&& curl -fSL https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.25.1%2B.patch -o dynamic_tls_records.patch \
+	&& curl -fSL https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/0.5/nginx__dynamic_tls_records_1.17.7%2B.patch -o dynamic_tls_records.patch \
 	&& patch -p1 < dynamic_tls_records.patch \
 	&& ./configure $CONFIG --with-debug \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
@@ -173,13 +169,16 @@ RUN GPG_KEYS=D6786CE303D9A9022998DC6CC8464D549AF75C0A \
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY nginx.vh.no-default.conf /etc/nginx/conf.d/default.conf
+COPY conf/stable/nginx.conf /etc/nginx/nginx.conf
+COPY conf/stable/nginx.vh.no-default.conf /etc/nginx/conf.d/default.conf
+
+RUN APK_ARCH="$(cat /etc/apk/arch)"
 
 LABEL description="NGINX Docker built top of LibreSSL" \
       maintainer="Denis Denisov <denji0k@gmail.com>" \
       openssl="LibreSSL $LIBRESSL_VERSION" \
-      nginx="nginx $NGINX_VERSION"
+      nginx="nginx $NGINX_VERSION" \
+      arch="$APK_ARCH"
 
 EXPOSE 80 443
 
