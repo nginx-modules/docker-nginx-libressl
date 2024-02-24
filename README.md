@@ -4,11 +4,21 @@
 
 [![](https://img.shields.io/docker/automated/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/builds/) [![](https://img.shields.io/docker/pulls/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/) [![](https://img.shields.io/docker/stars/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/)
 
-#### Build
+[![Docker Image CI](https://github.com/nginx-modules/docker-nginx-libressl/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nginx-modules/docker-nginx-libressl/actions/workflows/docker-image.yml)
 
-[![](https://images.microbadger.com/badges/version/denji/nginx-libressl:stable-alpine.svg)](https://microbadger.com/images/denji/nginx-libressl:stable-alpine "denji/nginx-libressl:stable-alpine") [![](https://images.microbadger.com/badges/image/denji/nginx-libressl:stable-alpine.svg)](https://microbadger.com/images/denji/nginx-libressl:stable-alpine "denji/nginx-libressl:stable-alpine")
+### Supported tags and respective `Dockerfile` links
 
-[![](https://images.microbadger.com/badges/version/denji/nginx-libressl:mainline-alpine.svg)](https://microbadger.com/images/denji/nginx-libressl:mainline-alpine "nginx-libressl:mainline-alpine") [![](https://images.microbadger.com/badges/image/denji/nginx-libressl:mainline-alpine.svg)](https://microbadger.com/images/denji/nginx-libressl:mainline-alpine "nginx-libressl:mainline-alpine")
+* Stable Release
+  - `docker.io/denji/nginx-libressl:stable-alpine` - (Linux x86_64-v4)
+  - `docker.io/denji/nginx-libressl:stable-aarch64-alpine` - (Linux AArch64 - ARMv8)
+  - `docker.io/denji/nginx-libressl:stable-armv7-alpine` - (Linux ARMv7 - 32-bit)
+  - `docker.io/denji/nginx-libressl:stable-ppc64le-alpine` - (Linux ppc64le - 64-bit PowerPC little-endian)
+
+* Mainline Release
+  - `docker.io/denji/nginx-libressl:mainline-alpine` - (Linux x86_64-v4)
+  - `docker.io/denji/nginx-libressl:mainline-aarch64-alpine` - (Linux AArch64 - ARMv8)
+  - `docker.io/denji/nginx-libressl:mainline-armv7-alpine` - (Linux ARMv7 - 32-bit)
+  - `docker.io/denji/nginx-libressl:mainline-ppc64le-alpine` - (Linux ppc64le - 64-bit PowerPC little-endian)
 
 #### Features
 
