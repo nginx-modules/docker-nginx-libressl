@@ -1,34 +1,46 @@
-# **NGINX** built with **LibreSSL**
+# NGINX with LibreSSL
 
-### Docker image
+[**NGINX built with LibreSSL**](https://github.com/nginx-modules/docker-nginx-libressl)
 
-[![](https://img.shields.io/docker/automated/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/builds/) [![](https://img.shields.io/docker/pulls/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/) [![](https://img.shields.io/docker/stars/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/)
+---
+
+[![Pulls](https://img.shields.io/docker/pulls/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/) 
+[![Stars](https://img.shields.io/docker/stars/denji/nginx-libressl.svg)](https://hub.docker.com/r/denji/nginx-libressl/)
 
 [![Docker Image CI](https://github.com/nginx-modules/docker-nginx-libressl/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nginx-modules/docker-nginx-libressl/actions/workflows/docker-image.yml)
 
-### Supported tags and respective `Dockerfile` links
+## Docker Image
 
-* Stable Release
-  - `docker.io/denji/nginx-libressl:stable-alpine` - (Linux x86_64-v4)
-  - `docker.io/denji/nginx-libressl:stable-aarch64-alpine` - (Linux AArch64 - ARMv8)
-  - `docker.io/denji/nginx-libressl:stable-armv7-alpine` - (Linux ARMv7 - 32-bit)
-  - `docker.io/denji/nginx-libressl:stable-ppc64le-alpine` - (Linux ppc64le - 64-bit PowerPC little-endian)
+Images are published to both registries:
+- `docker.io/denji/nginx-libressl`
+- `ghcr.io/nginx-modules/nginx-libressl`
 
-* Mainline Release
-  - `docker.io/denji/nginx-libressl:mainline-alpine` - (Linux x86_64-v4)
-  - `docker.io/denji/nginx-libressl:mainline-aarch64-alpine` - (Linux AArch64 - ARMv8)
-  - `docker.io/denji/nginx-libressl:mainline-armv7-alpine` - (Linux ARMv7 - 32-bit)
-  - `docker.io/denji/nginx-libressl:mainline-ppc64le-alpine` - (Linux ppc64le - 64-bit PowerPC little-endian)
+---
 
-#### Features
+## Supported tags and architectures (compact)
 
-- Images are used Alpine Linux.
-- PCRE with JIT enabled.
-- HTTP/2.0 (+NPN) support.
-- Async I/O using threads support.
-- Dynamic TLS records patch CloudFlare support (and configured).
-- Gzip static `.gz` files support enabled
-- Brotli static `.br` files support (and configured).
-  - Brotli on-the-fly disabled (dynamic compression unstable)
+| Tag pattern | Architectures |
+|-------------|---------------|
+| `stable-alpine`, `mainline-alpine` | x86_64, ARMv6/7 (32-bit), AArch64 (ARMv8), RISC-V64, LoongArch64, PPC64LE |
+| `stable-aarch64-alpine`, `mainline-aarch64-alpine` | AArch64 (ARMv8) |
+| `stable-armv6-alpine`, `mainline-armv6-alpine` | ARMv6 (32-bit) |
+| `stable-armv7-alpine`, `mainline-armv7-alpine` | ARMv7 (32-bit) |
+| `stable-riscv64-alpine`, `mainline-riscv64-alpine` | RISC-V 64 |
+| `stable-loong64-alpine`, `mainline-loong64-alpine` | LoongArch 64-bit |
+| `stable-ppc64le-alpine`, `mainline-ppc64le-alpine` | PPC64LE (64-bit PowerPC little-endian) |
 
-#### Based on the Official NGINX Dockerfile & `Wonderfall/boring-nginx`
+---
+
+## Features
+
+- Based on **Alpine Linux**.
+- **PCRE** with JIT enabled.
+- **HTTP/2** (+NPN) support.
+- **Async I/O** using threads supported.
+- **Dynamic TLS record patch** for Cloudflare (enabled).
+- **Gzip static `.gz` files** support enabled.
+- **Brotli static `.br` files** support enabled.
+  - On-the-fly Brotli compression is **disabled** (unstable).
+- Based on **Official NGINX Dockerfile** and [`Wonderfall/boring-nginx`](https://github.com/Wonderfall/boring-nginx).
+
+---
