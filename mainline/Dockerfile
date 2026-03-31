@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ENV NGINX_VERSION=1.29.5
+ENV NGINX_VERSION=1.29.8
 ENV LIBRESSL_VERSION=4.2.1
 
 # -----------------------------------------------------------------------------
@@ -108,7 +108,6 @@ RUN set -eux \
     && GPG_KEYS="43387825DDB1BB97EC36BA5D007C8D7C15D87369 A1EB079B8D3EB92B4EBD3139663AF51BD5E4D8D5" \
     && GNUPGHOME="$(mktemp -d)" \
     && export GNUPGHOME \
-    && found="" \
     && for server in \
            hkps://keys.openpgp.org \
            hkps://keyserver.ubuntu.com \
@@ -116,25 +115,20 @@ RUN set -eux \
            hkp://pgp.mit.edu:80 \
        ; do \
            echo "Fetching nginx GPG keys from ${server}"; \
-           for key in ${GPG_KEYS}; do \
-               gpg --keyserver "${server}" \
-                   --keyserver-options timeout=10 \
-                   --recv-keys "${key}" 2>/dev/null \
-               && found=yes \
-               || true; \
-           done; \
-           test "${found}" = yes && break || true; \
+           gpg --keyserver "${server}" \
+               --keyserver-options timeout=10 \
+               --recv-keys ${GPG_KEYS} 2>/dev/null \
+           && break || true; \
        done \
-    && if [ -z "${found}" ]; then \
-           echo "Falling back to nginx.org key download"; \
-           curl -fsSL https://nginx.org/keys/nginx_signing.key -o nginx_signing.key \
-           && gpg --import nginx_signing.key \
-           && found=yes \
-           || true; \
-           rm -f nginx_signing.key; \
-       fi \
-    && test "${found}" = yes \
-       || { echo >&2 "ERROR: failed to fetch nginx GPG keys"; exit 1; } \
+    \
+    # -- GPG: per-key fallback — always import NGINX key directly -------------
+    && curl -fsSL https://nginx.org/keys/nginx_signing.key | gpg --import \
+    \
+    # -- GPG: verify every required key is present in the keyring -------------
+    && for key in ${GPG_KEYS}; do \
+           gpg --list-keys "${key}" > /dev/null 2>&1 \
+           || { echo >&2 "ERROR: GPG key ${key} could not be fetched"; exit 1; }; \
+       done \
     \
     # -- Verify signatures -----------------------------------------------------
     && { gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
