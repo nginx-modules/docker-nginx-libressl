@@ -105,7 +105,7 @@ RUN set -eux \
     && curl -fsSL "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl.asc"                            -o libressl-project.asc \
     \
     # -- GPG: fetch nginx signing keys (keyserver fallback chain) --------------
-    && GPG_KEYS="43387825DDB1BB97EC36BA5D007C8D7C15D87369 A1EB079B8D3EB92B4EBD3139663AF51BD5E4D8D5" \
+    && GPG_KEYS="43387825DDB1BB97EC36BA5D007C8D7C15D87369 D6786CE303D9A9022998DC6CC8464D549AF75C0A A1EB079B8D3EB92B4EBD3139663AF51BD5E4D8D5" \
     && GNUPGHOME="$(mktemp -d)" \
     && export GNUPGHOME \
     && for server in \
@@ -121,8 +121,12 @@ RUN set -eux \
            && break || true; \
        done \
     \
-    # -- GPG: per-key fallback — always import NGINX key directly -------------
+    # -- GPG: per-key fallback — import nginx bundle + Kandaurov key directly --
     && curl -fsSL https://nginx.org/keys/nginx_signing.key | gpg --import \
+    && curl -fsSL https://nginx.org/keys/pluknet.key       | gpg --import \
+    \
+    # -- GPG: per-key fallback — import libressl key directly --
+    && curl -fsSL https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl.asc | gpg --import \
     \
     # -- GPG: verify every required key is present in the keyring -------------
     && for key in ${GPG_KEYS}; do \
