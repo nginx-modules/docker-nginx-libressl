@@ -1,7 +1,7 @@
 FROM alpine:latest
 
 ENV NGINX_VERSION=1.30.3
-ENV LIBRESSL_VERSION=4.2.1
+ENV LIBRESSL_VERSION=4.3.2
 
 # -----------------------------------------------------------------------------
 # Build flags -- kept as ENV so they are visible in `docker inspect`
