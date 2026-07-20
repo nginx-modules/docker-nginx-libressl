@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ENV NGINX_VERSION=1.30.3
+ENV NGINX_VERSION=1.30.4
 ENV LIBRESSL_VERSION=4.3.2
 
 # -----------------------------------------------------------------------------
