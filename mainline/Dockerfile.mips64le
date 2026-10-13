@@ -2,6 +2,11 @@ FROM --platform=linux/mips64le alpine:3.14
 
 ENV NGINX_VERSION=1.31.6
 ENV LIBRESSL_VERSION=4.3.3
+# https://docs.docker.com/reference/dockerfile/#automatic-platform-args-in-the-global-scope
+ARG TARGETPLATFORM
+ARG TARGETVARIANT
+ARG TARGETARCH
+ARG TARGETOS
 
 # -----------------------------------------------------------------------------
 # Build flags -- kept as ENV so they are visible in `docker inspect`
@@ -163,8 +168,21 @@ RUN set -eux \
     && patch -p1 < dynamic_tls_records.patch \
     && rm dynamic_tls_records.patch \
     \
+    # -- Refresh GNU config scripts for architecture detection -----------------
+    && LIBRESSL_SRC="/usr/src/libressl-${LIBRESSL_VERSION}" \
+    && AUTOMAKE_LIBDIR="$(automake --print-libdir)" \
+    && install -m 755 "${AUTOMAKE_LIBDIR}/config.guess" "${LIBRESSL_SRC}/config.guess" \
+    && install -m 755 "${AUTOMAKE_LIBDIR}/config.sub" "${LIBRESSL_SRC}/config.sub" \
+    \
+    # -- Configure with --disable-asm to avoid QEMU assembly on armv6/armv7 ----
+    && EXTRA_OPENSSL_CONFIGURE_ARGS="" \
+    && if [ "$TARGETPLATFORM" = "linux/arm/v6" ] || [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
+        echo "Applying --disable-asm for 32-bit ARM ($TARGETARCH $TARGETVARIANT)"; \
+        EXTRA_OPENSSL_CONFIGURE_ARGS="--with-openssl-opt=no-asm"; \
+       fi \
+    \
     # -- Release build & install -----------------------------------------------
-    && ./configure ${CONFIG} \
+    && ./configure ${CONFIG} ${EXTRA_OPENSSL_CONFIGURE_ARGS} \
         --with-cc-opt="-flto -fno-fat-lto-objects" \
         --with-ld-opt="-flto" \
     && make -j"$(getconf _NPROCESSORS_ONLN)" \
@@ -175,7 +193,7 @@ RUN set -eux \
     # release build (same source timestamps) and the "debug" binary silently
     # ends up compiled without -g and -DNGINX_DEBUG flags.
     && make clean \
-    && ./configure ${CONFIG} --with-debug \
+    && ./configure ${CONFIG} ${EXTRA_OPENSSL_CONFIGURE_ARGS} --with-debug \
         --with-cc-opt="-flto -fno-fat-lto-objects" \
         --with-ld-opt="-flto" \
     && make -j"$(getconf _NPROCESSORS_ONLN)" \
@@ -239,9 +257,6 @@ RUN set -eux \
 # -----------------------------------------------------------------------------
 COPY nginx.conf               /etc/nginx/nginx.conf
 COPY nginx.vh.no-default.conf /etc/nginx/conf.d/default.conf
-
-ARG TARGETARCH=unknown
-ARG TARGETOS=unknown
 
 LABEL org.opencontainers.image.title="NGINX with LibreSSL" \
       org.opencontainers.image.description="NGINX ${NGINX_VERSION} built on Alpine with LibreSSL" \
