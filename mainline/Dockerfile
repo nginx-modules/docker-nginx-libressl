@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ENV NGINX_VERSION=1.31.6
+ENV NGINX_VERSION=1.31.7
 ENV LIBRESSL_VERSION=4.3.3
 # https://docs.docker.com/reference/dockerfile/#automatic-platform-args-in-the-global-scope
 ARG TARGETPLATFORM
